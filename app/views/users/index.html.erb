@@ -1,5 +1,13 @@
 <% provide(:title, 'All Users') %>
-<h1>ユーザー一覧</h1>
+<h1>全てのユーザー</h1>
+
+<div class="col-md-3 col-md-offset-8">
+  <p>ユーザー検索</p>
+  <%= form_with(url: users_path, local: true, method: :get ) do |f| %>
+  <%= f.text_field :name, placeholder: "キーワードを入力" %>
+  <button class: "btn btn-primary" ><% f.submit :Search %>検索</button>
+<% end %>
+</div>
 
 <div class="col-md-10 col-md-offset-1">
   <%= will_paginate %>

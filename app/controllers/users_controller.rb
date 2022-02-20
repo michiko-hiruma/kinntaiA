@@ -7,6 +7,8 @@ class UsersController < ApplicationController
   before_action :set_one_month, only: :show
 
   def index
+    debugger
+
     # @users = User.paginate(page: params[:page])
     @users = User.where('name LIKE(?)', "%#{params[:name]}%").paginate(page: params[:page], per_page: 20)
   end

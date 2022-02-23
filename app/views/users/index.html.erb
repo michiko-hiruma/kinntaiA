@@ -1,6 +1,6 @@
 <% provide(:title, 'All Users') %>
 
-<% if params[:name] %>
+<% if params[:name].present? %>
 <h1>検索結果</h1>
 <% else %>
 <h1>全てのユーザー</h1>

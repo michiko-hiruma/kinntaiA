@@ -1,5 +1,5 @@
 Rails.application.configure do
-  config.hosts << "5061051548194f5abbb6ee288522d2e9.vfs.cloud9.ap-northeast-1.amazonaws.com"
+  config.hosts.clear
   config.active_storage.service = :local
   # Settings specified here will take precedence over those in config/application.rb.
 

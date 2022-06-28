@@ -31,6 +31,31 @@ class UsersController < ApplicationController
       render :new
     end
   end
+  
+   def import
+    if params[:file].blank?
+      flash[:danger]= "csvファイルを選択して下さい"
+      redirect_to users_url
+    elsif
+      File.extname(params[:file].original_filename) != ".csv"
+      flash[:danger]= "csvファイル以外は出力できません"
+      redirect_to users_url
+    else
+      User.import(params[:file])
+      flash[:success]= "インポートが完了しました"
+      redirect_to users_url
+    end 
+   
+   rescue ActiveRecord::RecordInvalid
+    flash[:danger]= "不正なファイルのため、インポートに失敗しました"
+    redirect_to users_url
+   rescue ActiveRecord::RecordNotUnique
+    flash[:danger]= "既にインポート済です"
+    redirect_to users_url
+   end
+  def edit
+  end
+
 
   def edit
   end
@@ -65,7 +90,8 @@ class UsersController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:name, :email, :department, :password, :password_confirmation)
+      params.require(:user).permit(:name, :email, :affiliation,:employee_number,:uid, :password, 
+        :password_confirmation, :basic_work_time, :designated_work_start_time, :designated_work_end_time)
     end
 
     def basic_info_params

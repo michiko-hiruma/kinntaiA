@@ -17,6 +17,14 @@
 
 <div class="col-md-10 col-md-offset-1">
   <%= will_paginate %>
+  
+   <div class="csv">
+      <%= form_tag "#",multipart: true do |f|%>
+        <%= file_field_tag :file %>
+        <%= submit_tag "CSVインポート",class: "btn btn-primary"%>
+      <% end %>
+    </div> 
+    
   <table class="table table-condensed table-hover" id="table-users">
     <thead>
       <tr>
@@ -55,4 +63,3 @@
 </div>
 
 <div id="edit-basic-info" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
-© 2022 GitHub, Inc.

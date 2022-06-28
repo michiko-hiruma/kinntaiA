@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_31_141935) do
+ActiveRecord::Schema.define(version: 2022_06_26_123757) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -71,6 +71,11 @@ ActiveRecord::Schema.define(version: 2022_05_31_141935) do
     t.datetime "basic_time", default: "2022-05-30 23:00:00"
     t.datetime "work_time", default: "2022-05-30 22:30:00"
     t.boolean "superior", default: false
+    t.string "affiliation"
+    t.integer "employee_number"
+    t.string "uid"
+    t.datetime "designated_work_start_time"
+    t.datetime "designated_work_end_time"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 

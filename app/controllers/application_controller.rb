@@ -40,6 +40,10 @@ class ApplicationController < ActionController::Base
         redirect_to(root_url)
       end  
     end
+    
+    def admin_not_user
+      redirect_to root_url if current_user.admin?  
+    end
 
   # ページ出力前に1ヶ月分のデータの存在を確認・セットします。
   def set_one_month 

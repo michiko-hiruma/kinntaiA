@@ -26,19 +26,7 @@
     </div> 
     
   <table class="table table-condensed table-hover" id="table-users">
-    <thead>
-      <tr>
-        <th><%= User.human_attribute_name :name %></th>
-        <th class="center"><%= User.human_attribute_name :department %></th>
-        <% if current_user.admin? %>
-          <th class="center"><%= User.human_attribute_name :basic_time %></th>
-          <th class="center"><%= User.human_attribute_name :work_time %></th>
-        <% end %>
-        <th></th>
-      </tr>
-    </thead>
-
-    <% @users.each do |user| %>
+       <% @users.each do |user| %>
        <p>
       <%= user.name %><br>
         |&nbsp<%= link_to "削除", user, method: :delete,data: { confirm: "#{user.name}を削除してよろしいですか？" },

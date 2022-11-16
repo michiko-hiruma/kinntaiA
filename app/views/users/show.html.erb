@@ -26,6 +26,11 @@
   </table>
 </div>
 <div class="btn-users-show">
+  <% if current_user.superior? %>
+  【所属長承認申請のお知らせ】<br>
+  【勤怠変更申請のお知らせ】<br>
+  【残業申請のお知らせ】<br>
+  <% end %>
   <%= link_to "勤怠を編集",attendances_edit_one_month_user_path(date: @first_day),class: "btn btn-primary" %> &nbsp;
   <%= link_to "CSV出力",user_path(format: 'csv'),class: "btn btn-primary" %><br>
   <%= link_to "勤怠修正ログ（承認済）","#(@user, @attendance)",class: "btn btn-primary" %>
@@ -78,8 +83,8 @@
         end
       %>
         <tr>
-          <!--<td><!%= link_to "残業申請", edit_overtime_request_user_attendance_path(@user,day), remote: true , class: "btn btn-primary" %></td>-->
-          <td><%= link_to "残業申請","#", remote: true , class: "btn btn-primary" %></td>
+          <td><%= link_to "残業申請", edit_overtime_request_user_attendance_path(@user,day), remote: true , class: "btn btn-primary" %></td>
+          <!--<td><!%= link_to "残業申請","#", remote: true , class: "btn btn-primary" %></td>-->
 
           <td><%= l(day.worked_on, format: :short) %></td>
           <!--<td><!%= $days_of_the_week[day.worked_on.wday] %></td>-->

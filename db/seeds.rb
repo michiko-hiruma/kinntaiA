@@ -7,13 +7,13 @@ User.create!(name: "Sample User",
              admin: true)
              
 User.create!(name:"上長A",
-             email: "jyouchouA@email.com",
+             email: "sampleA@email.com",
              password: "password",
              password_confirmation: "password",
              superior: true)
              
 User.create!(name:"上長B",
-             email: "jyouchouB@email.com",
+             email: "sampleB@email.com",
              password: "password",
              password_confirmation: "password",
              superior: true)             

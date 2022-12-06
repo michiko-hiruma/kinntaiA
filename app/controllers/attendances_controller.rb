@@ -13,6 +13,15 @@ class AttendancesController < ApplicationController
     @attendance = Attendance.find(params[:id])
     @superior = User.where(superior: true).where.not( id: current_user.id )
   end
+  
+  def update_overtime_request
+    @user = User.find(params[:user_id])
+    @attendance = Attendance.find(params[:id])
+    if @attendance.update(overtime_params)
+      flash[:success] = "残業申請を受け付けました"
+      redirect_to user_url(@user)
+    end  
+  end
 
   def update
     @user = User.find(params[:user_id])
@@ -62,6 +71,11 @@ class AttendancesController < ApplicationController
     # 1ヶ月分の勤怠情報を扱います。
     def attendances_params
       params.require(:user).permit(attendances: [:started_at, :finished_at, :note])[:attendances]
+    end
+    # 残業申請モーダルの情報
+    def overtime_params
+      # attendanceテーブルの（残業終了予定時間,翌日、残業内容、指示者確認（どの上長か）、指示者確認（申請かどうか））
+      params.require(:attendance).permit(:overtime_finished_at, :tomorrow, :overtime_work,:indicater_check,:indicater_reply)
     end
 
     

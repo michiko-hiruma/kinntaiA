@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_23_012659) do
+ActiveRecord::Schema.define(version: 2023_01_10_004910) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(version: 2022_12_23_012659) do
     t.boolean "change", default: false
     t.string "indicater_check_edit"
     t.integer "indicater_reply_edit"
+    t.string "indicater_check_anser"
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 

@@ -98,6 +98,8 @@ class AttendancesController < ApplicationController
   end
 
   def edit_one_month
+    @attendance = Attendance.find(params[:id])
+    @superior = User.where(superior: true).where.not( id: current_user.id )
   end
 
   def update_one_month
@@ -122,10 +124,12 @@ class AttendancesController < ApplicationController
 
   private
 
-    # 1ヶ月分の勤怠情報を扱います。
+    # 勤怠編集
     def attendances_params
-      params.require(:user).permit(attendances: [:started_at, :finished_at, :note])[:attendances]
+      # userに紐ずくattendanceテーブルの（出社日,出勤,退勤,翌日,備考,指示者確認（どの上長か,指示者確認（申請かどうか））
+      params.require(:user).permit(attendances: [:worked_on, :started_at, :finished_at, :started_edit_at, :finished_edit_at, :tomorrow_edit, :note, :indicater_check_edit, :indicater_reply_edit])[:attendances]
     end
+    
     # 残業申請モーダルの情報
     def overtime_params
       # attendanceテーブルの（残業終了予定時間,翌日、残業内容、指示者確認（どの上長か）、指示者確認（申請かどうか））

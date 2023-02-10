@@ -28,13 +28,21 @@
 <div class="btn-users-show">
   <% if current_user.superior? %>
   【所属長承認申請のお知らせ】<br>
-  【勤怠変更申請のお知らせ】<br>
-   <% if @overtime >= 1  %>
-        <p><%= link_to  "【残業申請のお知らせ】", edit_overtime_notice_user_attendance_path(@user, @overtime), remote: true, class: "notice" %><span class="red_box"><%= "#{@overtime}件の通知があります"%></span></p>
-      <% else %>
-        <p class="notice">【残業申請のお知らせ】</p>
-      <% end %> 
+    <% if @change >= 1 %>
+      <div class="red-group">
+        <p><%= link_to  "【勤怠変更申請のお知らせ】", edit_one_month_notice_user_attendance_path(@user, @change), remote: true, class: "notice" %><span class="red_box"><%= "#{@change}件の通知があります"%></span></p>
+      </div>  
+    <% else %>
+      <p class="notice">【勤怠変更申請のお知らせ】</p>
+    <% end %> 
+        
+    <% if @overtime >= 1  %>
+      <p><%= link_to  "【残業申請のお知らせ】", edit_overtime_notice_user_attendance_path(@user, @overtime), remote: true, class: "notice" %><span class="red_box"><%= "#{@overtime}件の通知があります"%></span></p>
+    <% else %>
+      <p class="notice">【残業申請のお知らせ】</p>
+    <% end %> 
   <% end %>
+  
   <%= link_to "勤怠を編集",attendances_edit_one_month_user_path(date: @first_day),class: "btn btn-primary" %> &nbsp;
   <%= link_to "CSV出力",user_path(format: 'csv'),class: "btn btn-primary" %><br>
   <%= link_to "勤怠修正ログ（承認済）","#(@user, @attendance)",class: "btn btn-primary" %>
@@ -129,6 +137,15 @@
              <% elsif day.indicater_reply == "否認" %>
              <%= "残業申請が#{day.indicater_reply}されました" %>
              <% end %>
+            </p>
+            <p>
+              <% if day.indicater_check_edit.present? %>
+                <%= "#{day.indicater_check_edit}に勤怠変更#{day.indicater_reply_edit}" %>
+                <% elsif day.indicater_reply_edit == "承認" %>
+                <%= "勤怠変更申請が#{day.indicater_reply_edit}されました" %>
+              <% elsif day.indicater_reply_edit == "否認" %>
+                <%= "勤怠変更申請が#{day.indicater_reply_edit}されました" %>
+              <% end %>
             </p>
           </td>
           

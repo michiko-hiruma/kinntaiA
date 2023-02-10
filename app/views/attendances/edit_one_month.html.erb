@@ -17,7 +17,9 @@
       </thead>
       <tbody>
         <% @attendances.each do |day| %>
-         <% 
+        <%= f.fields_for "attendances[]", day do |attendance| %>
+        <%= attendance.hidden_field :indicater_reply_edit, :value => "申請中" %>
+        <% 
         css_class =
         case %w{日 月 火 水 木 金 土}[day.worked_on.wday]
         when '土'
@@ -26,7 +28,6 @@
           'text-danger'
         end
       %>
-          <%= f.fields_for "attendances[]", day do |attendance| %>
            <tr>
               <td><%= l(day.worked_on, format: :short) %></td>
               <!--<td><!%= $days_of_the_week[day.worked_on.wday] %></td>-->
@@ -45,7 +46,7 @@
                 <% end %>
               </td>
               <td><%= attendance.text_field :note, class: "form-control" %></td>
-              <td><%= attendance.collection_select(:indicater_check_edit, @superior, :name, :name, {prompt: "上長を選択して下さい"}, {class: "form-control input-sm" ,required: true })%></td>
+              <td><%= attendance.collection_select(:indicater_check_edit, @superior, :name, :name, {prompt: "上長を選択して下さい"}, {class: "form-control input-sm"})%></td>
 
             </tr>
           <% end %>

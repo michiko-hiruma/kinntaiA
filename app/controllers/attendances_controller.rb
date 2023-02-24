@@ -1,6 +1,6 @@
 class AttendancesController < ApplicationController
   include AttendancesHelper
-  before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_overtime_notice]
+  before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_overtime_notice,:edit_one_month_notice]
   before_action :logged_in_user, only: [:update, :edit_one_month]
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
   before_action :set_one_month, only: :edit_one_month
@@ -125,7 +125,62 @@ class AttendancesController < ApplicationController
   def edit_one_month_notice
     @users = User.joins(:attendances).group("users.id").where(attendances: {indicater_reply_edit: "申請中"})
     @attendances = Attendance.where.not(started_edit_at: nil, finished_edit_at: nil, note: nil, indicater_reply_edit: nil ).order("worked_on ASC")
-  end  
+  end
+  
+  def update_one_month_notice
+    ActiveRecord::Base.transaction do 
+      e1 = 0
+      e2 = 0
+      e3 = 0
+      attendances_notice_params.each do |id, item|
+      if item[:indicater_reply_edit].present?
+        if (item[:change_edit] == "1") && (item[:indicater_reply_edit] == "なし" || item[:indicater_reply_edit] == "承認" || item[:indicater_reply_edit] == "否認")
+        attendance = Attendance.find(id)
+         @user = User.find(attendance.user_id)
+        if item[:indicater_reply_edit] == "なし" 
+            e1+= 1
+            item[:started_edit_at] = nil
+            item[:finished_edit_at] = nil
+            item[:tomorrow] = nil
+            item[:note] = nil
+            item[:indicater_check_edit] = nil
+        elsif item[:indicater_reply_edit] == "承認"
+            if attendance.started_before_at.blank?
+              item[:started_before_at] = attendance.started_at
+            end 
+            item[:started_at] = attendance.started_edit_at
+            if  attendance.finished_before_at.blank?
+              item[:finished_before_at] = attendance.finished_at
+            end 
+            item[:finished_at] = attendance.finished_edit_at
+           #item[:indicater_check_edit] = nil
+            e2 += 1          
+            attendance.indicater_check_anser = "勤怠変更申請を承認しました"
+        elsif item[:indicater_reply_edit] == "否認"
+            item[:started_edit_at] = nil
+            item[:finished_edit_at] = nil
+            item[:tomorrow] = nil
+            item[:note] = nil
+            item[:indicater_check_edit] = nil
+            e3 += 1
+            attendance.indicater_check_edit_anser = "勤怠変更申請を否認しました"   
+        end          
+          attendance.update!(item)
+        end
+      else
+          flash[:danger] = "指示者確認を更新、または変更にチェックを入れて下さい"
+          redirect_to user_url(params[:user_id])
+          return
+      end
+      end
+      flash[:success] = "【勤怠変更申請】 #{e1}件なし, #{e2}件承認, #{e3}件否認しました"
+      redirect_to user_url(params[:user_id])
+      return
+    end
+  rescue ActiveRecord::RecordInvalid 
+      flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
+       redirect_to edit_one_month_notice_user_attendance_url(@user,item)
+  end
 
   private
 
@@ -134,6 +189,11 @@ class AttendancesController < ApplicationController
       # userに紐ずくattendanceテーブルの（出社日,出勤,退勤,翌日,備考,指示者確認（どの上長か,指示者確認（申請かどうか））
       params.require(:user).permit(attendances: [:worked_on, :started_at, :finished_at, :started_edit_at, :finished_edit_at, :tomorrow_edit, :note, :indicater_check_edit, :indicater_reply_edit])[:attendances]
     end
+    
+    # 勤怠編集お知らせモーダル
+    def attendances_notice_params
+      params.require(:user).permit(attendances: [:started_at, :finished_at, :started_before_at, :finished_before_at, :started_edit_at, :finished_edit_at, :note, :indicater_reply_edit, :change_edit])[:attendances]
+    end 
     
     # 残業申請モーダルの情報
     def overtime_params

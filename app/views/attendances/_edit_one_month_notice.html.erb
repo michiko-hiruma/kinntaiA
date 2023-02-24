@@ -6,7 +6,7 @@
       </button>
     </div>
     <div class="modal-body">
-      <%= form_with(model: @user) do |f| %>
+      <%= form_with(model: @user, url: update_one_month_notice_user_attendance_path, method: :patch, local: true) do |f| %>
         <% @users.each do |user|%>
         <h3 align="center" class="modal-title"><%= "【#{user.name}からの勤怠変更申請】" %></h3>
         <% @attendances.each do |day| %>
@@ -66,8 +66,8 @@
                           <td><%= day.finished_edit_at.try(:strftime,"%H") %></td>
                           <td><%= day.finished_edit_at.try(:strftime,"%M") %></td>
                           <td><%= day.note %></td>
-                          <td><%= d.select :indicater_reply_edit,  {class: "form-control input-sm" ,required: true } %></td>
-                          <!--<td><1%= d.select :indicater_reply_edit, Attendance.indicater_reply_edits.keys,{prompt: "選択してください"}, {class: "form-control input-sm" ,required: true } %></td>-->
+                          <!--<td><!%= d.select :indicater_reply_edit,  {class: "form-control input-sm" ,required: true } %></td>-->
+                          <td><%= d.select :indicater_reply_edit, Attendance.indicater_reply_edits.keys,{prompt: "選択してください"}, {class: "form-control input-sm" ,required: true } %></td>
                           <td><%= d.check_box :change_edit %></td>
                           <td><%= link_to "確認", verifacation_user_path(user.id, worked_on: day.worked_on), class: "btn btn-primary", target: :_blank %></td>
                       </tbody>

@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       get 'edit_basic_s_info'
       get 'attendances/edit_one_month'
       patch 'attendances/update_one_month' # この行が追加対象です。
+      patch 'attendances/update_month_approval'
       # 確認のshowページ
       get 'verifacation'
     end

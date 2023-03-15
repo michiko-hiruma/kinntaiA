@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_02_24_025950) do
+ActiveRecord::Schema.define(version: 2023_03_10_015552) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -63,6 +63,10 @@ ActiveRecord::Schema.define(version: 2023_02_24_025950) do
     t.boolean "change_edit"
     t.datetime "started_before_at"
     t.datetime "finished_before_at"
+    t.string "indicater_check_edit_anser"
+    t.integer "indicater_reply_month"
+    t.date "month_approval"
+    t.string "indicater_check_month"
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 

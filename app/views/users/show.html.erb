@@ -27,7 +27,15 @@
 </div>
 <div class="btn-users-show">
   <% if current_user.superior? %>
-  【所属長承認申請のお知らせ】<br>
+  <% if @month >= 1 %>
+      <div class="red-group">
+        <p><%= link_to  "【所属長承認申請のお知らせ】", edit_month_approval_notice_user_attendance_path(@user, @month), remote: true, class: "notice" %><span class="red_box"><%= "#{@month}件の通知があります"%></span></p>
+      </div>    
+      <% else %>
+      <p class="notice">【所属長承認申請のお知らせ】</p>
+      <% end %> 
+<p></p>
+  
     <% if @change >= 1 %>
       <div class="red-group">
         <p><%= link_to  "【勤怠変更申請のお知らせ】", edit_one_month_notice_user_attendance_path(@user, @change), remote: true, class: "notice" %><span class="red_box"><%= "#{@change}件の通知があります"%></span></p>
@@ -195,3 +203,4 @@
 <div id= "edit-overtime-request" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 <div id= "edit-overtime-notice" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 <div id= "edit-one-month-notice" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id= "edit-month-approval-notice" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

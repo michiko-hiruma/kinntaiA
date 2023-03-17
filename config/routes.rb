@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       get 'edit_basic_s_info'
       get 'attendances/edit_one_month'
       patch 'attendances/update_one_month' # この行が追加対象です。
+      get 'attendances/edit_month_approval'
       patch 'attendances/update_month_approval'
       # 確認のshowページ
       get 'verifacation'
@@ -37,6 +38,9 @@ Rails.application.routes.draw do
         # 勤怠変更お知らせモーダル
         get 'edit_one_month_notice'
         patch 'update_one_month_notice'
+          #１ヶ月承認モーダル
+      get 'edit_month_approval_notice'
+      patch 'update_month_approval_notice'
      end
    end
   end

@@ -25,7 +25,7 @@ class AttendancesController < ApplicationController
         if item[:indicater_reply].present?
           if (item[:change] == "1") && (item[:indicater_reply] == "なし" || item[:indicater_reply] == "承認" || item[:indicater_reply] == "否認")
             attendance = Attendance.find(id)
-             user = User.find(attendance.user_id)
+            user = User.find(attendance.user_id)
             if item[:indicater_reply] == "なし" 
               o1+= 1
               item[:overtime_finished_at] = nil
@@ -242,6 +242,21 @@ class AttendancesController < ApplicationController
         flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
         redirect_to edit_month_approval_notice_user_attendance_url(@user,item)
   end
+  
+  def log
+    @user = User.find(params[:user_id])
+    # もし受け取ったパラメーターにworked_on(1i)とworked_on(2i)があれば(1iは年、2iは月)
+    if params["worked_on(1i)"].present? && params["worked_on(2i)"].present?
+      # 受け取ったworked_onの年と月を年/月にして、変数 year_monthに代入
+      year_month = "#{params["worked_on(1i)"]}/#{params["worked_on(2i)"]}"
+      # もし変数year_monthがあればDateTimeを日付に変換
+      @day = DateTime.parse(year_month) if year_month.present?
+      # @attendancesに@user.attendancesからindicater_reply_editカラムが承認のものとworked_on:のカラムが@dayのものを全て取得
+      @attendances = @user.attendances.where(indicater_reply_edit: "承認").where(worked_on: @day.all_month)
+    else
+      @attendances = @user.attendances.where(indicater_reply_edit: "承認").order("worked_on ASC")
+    end
+  end 
 
 
   private
@@ -273,6 +288,12 @@ class AttendancesController < ApplicationController
     def month_approval_params 
       # attendanceテーブルの（承認月,指示者確認、どの上長か）
       params.require(:user).permit(:month_approval, :indicater_reply_month, :indicater_check_month)
+    end
+    
+    # 1ヶ月承認申請お知らせモーダル
+    def month_approval_notice_params
+      # attendanceテーブルの（承認月,指示者確認、変更,どの上長か）
+      params.require(:user).permit(attendances: [:month_approval, :indicater_reply_month, :change_month, :indicater_check_month])[:attendances]
     end
 
     

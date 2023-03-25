@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_03_10_015552) do
+ActiveRecord::Schema.define(version: 2023_03_25_011838) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -67,6 +67,8 @@ ActiveRecord::Schema.define(version: 2023_03_10_015552) do
     t.integer "indicater_reply_month"
     t.date "month_approval"
     t.string "indicater_check_month"
+    t.boolean "change_month", default: false
+    t.string "indicater_check_month_anser"
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 

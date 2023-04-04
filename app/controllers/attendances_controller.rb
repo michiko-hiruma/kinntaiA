@@ -105,11 +105,39 @@ class AttendancesController < ApplicationController
   def update_one_month
     # ActiveRecord::Base.transaction do # トランザクションを開始します。
     # if attendances_invalid?
-      attendances_params.each do |id, item|
+      attendances_params.each do |id,item|
         @attendance = Attendance.find(id)
-        
+        # 上長が選択されていること
+          if item[:indicater_check_edit].present?
+            # 時間が入っていない場合はエラー
+            if item[:started_edit_at].blank? && item[:finished_edit_at].present?
+              flash[:danger] = "出勤時刻が存在しません"
+              redirect_to attendances_edit_one_month_user_url(date: params[:date])
+              return
+              # 出勤時間が入っていて退勤時間が空場合はエラー
+            elsif item[:started_edit_at].present? && item[:finished_edit_at].blank?
+              flash[:danger] = "退勤時間が存在しません"
+              redirect_to attendances_edit_one_month_user_url(date: params[:date]) 
+              return
+            elsif item[:started_edit_at].blank? && item[:finished_edit_at].blank?
+              flash[:danger] = "時刻を入力して下さい"
+              redirect_to attendances_edit_one_month_user_url(date: params[:date]) 
+              return
+              # 翌日にチェックがなく出勤時間が退勤時間より小さい場合  
+            elsif item[:started_edit_at].present? && item[:finished_edit_at].present? && item[:tomorrow_edit] == "0" && item[:started_edit_at].to_s > item[:finished_edit_at].to_s
+              flash[:danger] = "時刻に誤りがあります"
+              redirect_to attendances_edit_one_month_user_url(date: params[:date])
+              return
+              # 備考が空の場合
+            elsif item[:note].blank?
+              flash[:danger] = "変更内容を記入して下さい"
+              redirect_to attendances_edit_one_month_user_url(date: params[:date])
+              return
+            end
         @attendance.update!(item)
+          end
       end
+    
     flash[:success] = "1ヶ月分の勤怠情報を更新しました。"
     redirect_to user_url(date: params[:date])
     # else
@@ -295,6 +323,4 @@ class AttendancesController < ApplicationController
       # attendanceテーブルの（承認月,指示者確認、変更,どの上長か）
       params.require(:user).permit(attendances: [:month_approval, :indicater_reply_month, :change_month, :indicater_check_month])[:attendances]
     end
-
-    
 end

@@ -15,6 +15,7 @@ Rails.application.routes.draw do
       get 'edit_basic_info'
       patch 'update_basic_info'
       get 'edit_basic_s_info'
+      patch 'update_index'
       get 'attendances/edit_one_month'
       patch 'attendances/update_one_month' # この行が追加対象です。
       get 'attendances/edit_month_approval'

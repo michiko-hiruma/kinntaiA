@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
-  before_action :logged_in_user, only: [:index, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
+  before_action :set_user, only: [:show, :edit, :update, :update_index, :destroy, :edit_basic_info, :update_basic_info]
+  before_action :logged_in_user, only: [:index, :edit, :update, :update_index, :destroy, :edit_basic_info, :update_basic_info]
   before_action :correct_user, only: [:edit, :update]
   before_action :admin_user, only: [:destroy, :edit_basic_info, :update_basic_info, :index,:edit_basic_s_info, :working]
   before_action :admin_or_correct_user, only: :show
@@ -21,8 +21,14 @@ class UsersController < ApplicationController
     @month = Attendance.where(indicater_reply_month: "申請中", indicater_check_month: @user.name).count
     @superior = User.where(superior: true).where.not( id: current_user.id  )
     @attendance = @user.attendances.find_by(worked_on: @first_day)
+    # csv 出力
+    respond_to do |format|
+      format.html 
+      filename = @user.name + ":" + l(@first_day, format: :middle) + "分" + " " + "勤怠"
+      format.csv { send_data render_to_string, type: 'text/csv; charset=shift_jis', filename: "#{filename}.csv" }  
+    end   
   end
-
+  
   def new
     @user = User.new
   end
@@ -75,6 +81,16 @@ class UsersController < ApplicationController
       render :edit      
     end
   end
+  
+  def update_index
+    if @user.update(user_params)
+      flash[:success] = "ユーザー情報を更新しました。"
+      redirect_to users_url
+    else
+      flash[:danger] = "更新に失敗しました。"
+      redirect_to users_url
+    end 
+  end 
 
   def destroy
     @user.destroy

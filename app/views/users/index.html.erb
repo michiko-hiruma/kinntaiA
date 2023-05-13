@@ -23,10 +23,9 @@
         <%= file_field_tag :file %>
         <%= submit_tag "CSVインポート",class: "btn btn-primary"%>
       <% end %>
-    </div> 
+    </div>
     
-  <table class="table table-condensed table-hover" id="table-users">
-       <% @users.each do |user| %>
+    <% @users.each do |user| %>
        <p>
       <%= user.name %><br>
         |&nbsp<%= link_to "削除", user, method: :delete,data: { confirm: "#{user.name}を削除してよろしいですか？" },
